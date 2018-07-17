@@ -38,6 +38,8 @@ class HealthInfrastructure(object):
 
         self.health.status = set_application_status(self.health.dependencies)
 
+    def get_application_health_json(self):
+        return self.health.to_json()
 
 class Health(BaseSerialiazable):
 
