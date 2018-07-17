@@ -1,4 +1,4 @@
-# Zoop Python Infrastructure Endpoints (zpi)
+# Python Infrastructure Endpoints (zpi)
 
 This library deliveries a simple way to give your python app all formatted data to create two restful endpoints for obtain data about application's info and health routes.
 
@@ -14,7 +14,7 @@ git+https://github.com/getzoop/python-infra-endpoints.git@master#egg=zpi
 
 ## Application Info
 
-### Response Example
+#### Response Example
 ```json
 {
   "applicationName": "Zoop Subscription",
@@ -32,7 +32,7 @@ Application info always return 200 Ok.
 #### Objective
 When called, this route should return information about the application's package construction.
 
-#### Response body explained
+**Response body explained**
 The response object have this following fields:
 
 - _applicationName_: your application name (replacing blank spaces for dashes, accented characters for unaccented characters and omitting special characters).
@@ -41,9 +41,9 @@ The response object have this following fields:
 - _buildNumber_: the date and the CI build number where it's possible to find the artifacts of this deployment. Preferable that it be in the following pattern: `yyyyMMdd-{CI-BUILD_NUMBER}`.
 - _framework_: name and version of the framework used in the project. 
 
-### How to configure 
-
-#### Configuration file
+## How to configure 
+ 
+### Configuration file
 First you must create a YAML file containing the following structure: 
 ```yaml
 applicationName: Zoop Subscription
@@ -55,7 +55,7 @@ framework:
   version: 1.1.0
 ```
 
-#### Build Number
+### Build Number
 You can configure a target in your Makefile to generate a build number, just add the following line to the Makefile and configure the path to the yaml config file and he will update the build number every build you make.
 
 ```makefile
@@ -64,7 +64,7 @@ generateBuildNumber:
 	-sed -i "/buildNumber:/c buildNumber: $(BUILD_SUFFIX)-$(CI_BUILD_NUMBER)" $(YAML_CONFIG_FILE_PATH)
 ```
 
-#### Version Number
+### Version Number
 For version number, you should create a tag in the project's git repository and run the make target below, he will update the yaml file with the lastest tag version.
 
 ```makefile
@@ -73,7 +73,7 @@ generateVersion:
 	-sed -i "/version:/c version: $(VERSION)" $(YAML_CONFIG_FILE_PATH)
 ```
 
-#### Adding route
+### Adding route
 Add a `/info` route to you web framework and use the class `InfoInfrastructure` to load all information and return as json in the desired format, like the exemple using `Falcon 1.1.0` below:
 
 ```python 
@@ -157,13 +157,13 @@ class HealthResource(object):
             repository = HealthcheckRepository()
             return repository.check_connectivity()
 
-        health.add_dependency("MySQL Database", True, check_database_connectivity)
-        health.add_dependency("Payments API", True, check_payments_api_health)
-        health.add_dependency("Zoop API", True, check_zoop_api_health)
+        health.register_dependency("MySQL Database", True, check_database_connectivity)
+        health.register_dependency("Payments API", True, check_payments_api_health)
+        health.register_dependency("Zoop API", True, check_zoop_api_health)
 
-        health.validate_dependencies()
+        health.check_dependencies_status()
 
-        resp.body = health.health.to_json()
+        resp.body = health.get_application_health_json()
         resp.status = falcon.HTTP_200
 ```
 #### Step By Step

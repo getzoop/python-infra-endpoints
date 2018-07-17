@@ -17,7 +17,7 @@ class HealthInfrastructure(object):
         if len(duplicated) <= 0:
             self.__health.dependencies.append(dep)
 
-    def validate_dependencies(self):
+    def check_dependencies_status(self):
         """
         Execute verification method in all registered dependencies to define which is UP or DOWN and if
         the application is UP, PARTIAL or DOWN
