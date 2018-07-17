@@ -9,12 +9,15 @@ class BaseSerialiazable(ABC):
     excludedFieldsFromJson = []
 
     def _exclude_attribute_from_json(self, attr_name):
+        """exclude fields from final json"""
         self.excludedFieldsFromJson.append("_" + attr_name)
 
     def to_json(self):
+        """Serialize class to JSON"""
         return json.dumps(self.__serialize())
 
     def __serialize(self):
+        """Transforms all classes properties into a dict"""
         class_dict = vars(self)
 
         new_dict = dict()

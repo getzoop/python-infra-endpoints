@@ -8,12 +8,16 @@ from .common import BaseSerialiazable
 
 class InfoInfrastructure(object):
     def __init__(self, config_file_path):
+        """
+        :param config_file_path: File path to the yaml file that contains all application information
+        """
         if not os.path.isfile(config_file_path):
             raise FileNotFoundError("YAML configuration file not found at: " + config_file_path)
 
         self.yaml = yaml.load(open(config_file_path, "r"))
 
-    def info(self):
+    def get_application_info(self):
+        """Return the application information like Name, BuildNumber, Version and Python version in a json format"""
         app_info = ApplicationInfo()
         app_info.application_name = self.yaml["applicationName"]
         app_info.created_by = self.yaml["createdBy"]
@@ -32,8 +36,7 @@ class ApplicationInfo(BaseSerialiazable):
         self._application_name = None
         self._created_by = None
         self._version = None
-        version_formatted = sys.version.replace("\n", '')
-        self._python_version = "Python {version}".format(version=version_formatted)
+        self._python_version = sys.version.replace("\n", '')
 
     @property
     def application_name(self):

@@ -6,20 +6,27 @@ from zpi.common import BaseSerialiazable
 class HealthInfrastructure(object):
 
     def __init__(self):
-        self.health = Health()
+        self.__health = Health()
 
-    def add_dependency(self, name, is_critical, func):
+    def register_dependency(self, name, is_critical, func):
+        """Add a dependency to dependency list it will be verified to define if application is UP or DOWN"""
         dep = Dependency(name, is_critical, func)
 
-        duplicated = [dep for dep in self.health.dependencies if str.lower(dep.name) == str.lower(name)]
+        duplicated = [dep for dep in self.__health.dependencies if str.lower(dep.name) == str.lower(name)]
 
         if len(duplicated) <= 0:
-            self.health.dependencies.append(dep)
+            self.__health.dependencies.append(dep)
 
     def validate_dependencies(self):
-        [dependency.exeucute_validation() for dependency in self.health.dependencies]
+        """
+        Execute verification method in all registered dependencies to define which is UP or DOWN and if
+        the application is UP, PARTIAL or DOWN
+        """
+        [dependency.exeucute_validation() for dependency in self.__health.dependencies]
 
         def set_application_status(dependency):
+
+            """Set the application health status based on dependencies status"""
 
             critical_dependencies = [dep for dep in dependency if dep.is_critical is True]
             non_critical_dependencies = [dep for dep in dependency if dep.is_critical is False]
@@ -36,7 +43,11 @@ class HealthInfrastructure(object):
 
             return application_status
 
-        self.health.status = set_application_status(self.health.dependencies)
+        self.__health.status = set_application_status(self.__health.dependencies)
+
+    def get_application_health_json(self):
+        """Return all health information (application and dependencies) in a json string format"""
+        return self.__health.to_json()
 
 
 class Health(BaseSerialiazable):
