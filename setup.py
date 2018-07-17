@@ -4,16 +4,16 @@ from os.path import basename, splitext
 
 from setuptools import find_packages
 
-import src.infrastructure
+import src.zpi
 
 setup(
     name='zpi',
-    version=src.infrastructure.__version__,
+    version=src.zpi.__version__,
     url='https://github.com/getzoop/python-infra-endpoints',
     license='MIT',
     author='Renan Chagas',
     author_email='renan.chagas@zoop.co',
-    package_dir={'infrastructure': 'src/infrastructure'},
+    package_dir={'zpi': 'src/zpi'},
     packages=find_packages('src'),
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,

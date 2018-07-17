@@ -1,6 +1,6 @@
 from enum import Enum
 
-from infrastructure.common import BaseSerialiazable
+from zpi.common import BaseSerialiazable
 
 
 class HealthInfrastructure(object):

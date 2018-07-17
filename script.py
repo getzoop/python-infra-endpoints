@@ -1,7 +1,7 @@
 import os
 
-from infrastructure.health import HealthInfrastructure
-from infrastructure.info import InfoInfrastructure
+from zpi.health import HealthInfrastructure
+from zpi.info import InfoInfrastructure
 
 app = HealthInfrastructure()
 info = InfoInfrastructure(os.path.abspath("./infrastructure_config.yaml"))
