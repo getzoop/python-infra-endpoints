@@ -3,6 +3,7 @@ VERSION := $(shell echo "1.7.2-626-3d9eb36")
 #VERSION := $(shell git describe --tags --always HEAD)
 
 generateVersion:
+	$(eval VERSION := $(shell echo "1.7.2-626-3d9eb36"))
 	-sed -i "/version:/c version: $(VERSION)" infrastructure_config.yaml
 
 generateBuildNumber:
