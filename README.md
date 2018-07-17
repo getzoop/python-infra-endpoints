@@ -9,12 +9,12 @@ This library deliveries a simple way to give your python app all formatted data 
 ### Response Example
 ```json
 {
-  "pythonVersion": "Python 3.5.5 (default, Feb  6 2018, 10:57:32) [GCC 4.8.5 20150623 (Red Hat 4.8.5-16)]",
-  "createdBy": "Build Tool",
   "applicationName": "Zoop Subscription",
-  "framework": "Falcon 1.1.0",
+  "createdBy": "Build Tool",
   "version": "1.7.2-626-3d9eb36",
-  "buildNumber": "20180713-001"
+  "buildNumber": "20180713-001",
+  "framework": "Falcon 1.1.0",
+  "pythonVersion": "3.5.5 (default, Feb  6 2018, 10:57:32) [GCC 4.8.5 20150623 (Red Hat 4.8.5-16)]"
 }
 ```
 
@@ -27,7 +27,7 @@ When called, this route should return information about the application's packag
 #### Response body explained
 The response object have this following fields:
 
-- _applicationName_: your application name (replacing blank spaces for dashes, accented characters for unaccented characters and omitting special charactes).
+- _applicationName_: your application name (replacing blank spaces for dashes, accented characters for unaccented characters and omitting special characters).
 - _createdBy_: name and version of your build tool. If no one are used, you can specify the CI server name and version.
 - _version_: your application version, may be `{major}.{minor}.{release}` pattern or a git hash from repository.
 - _buildNumber_: the date and the CI build number where it's possible to find the artifacts of this deployment. Preferable that it be in the following pattern: `yyyyMMdd-{CI-BUILD_NUMBER}`.
@@ -82,7 +82,7 @@ class InfoResource(object):
 
 ## Application Health
 
-### Response Exemple
+### Health Response Example
 ```json
 {
   "status": "UP",
@@ -122,3 +122,49 @@ The response object have this following fields:
 name: The declared dependency name
 - _isCritical_: dependency's criticity. It should be determined by its impact when out of service: if your application gets only partially impacted, it should be false, it should be true otherwise
 - _status_: the health of your application connectivity with this dependency. It's an enumeration with UP or FAIL as possible values.
+
+
+### Adding route
+Add a `/health` route and to the follwing implementation using `HealthInfrastructure` class provided by this lib.
+
+
+**Implementation Example**
+```python
+from zpi.health import HealthInfrastructure
+
+class HealthResource(object):
+
+    def on_get(self, req, resp):
+        health = HealthInfrastructure()
+
+        def check_payments_api_health():
+            service = PaymentsService()
+            return service.healthcheck(ApiEnum.PAYMENTS)
+
+        def check_zoop_api_health():
+            service = PaymentsService()
+            return service.healthcheck(ApiEnum.ZOOP_API)
+
+        def check_database_connectivity():
+            repository = HealthcheckRepository()
+            return repository.check_connectivity()
+
+        health.add_dependency("MySQL Database", True, check_database_connectivity)
+        health.add_dependency("Payments API", True, check_payments_api_health)
+        health.add_dependency("Zoop API", True, check_zoop_api_health)
+
+        health.validate_dependencies()
+
+        resp.body = health.health.to_json()
+        resp.status = falcon.HTTP_200
+```
+##### Step By Step
+
+- The method `register_dependency` receives 3 arguments:
+	- _name_: Dependency's name.
+	- _is_critical_: Boolean indicating if this dependency is critical to application.
+	- _validation_method_: Function without arguments who will perform a validation and return a Boolean indicating if the dependency is UP or DOWN.
+
+- The method `validate_dependencies` execute all validation method from registered dependencies and assess, based on which dependencies is UP or DOWN, the application health.
+
+- The method `health.health.to_json()` get all information gathered and transform in a [JSON](#health-response-example).
