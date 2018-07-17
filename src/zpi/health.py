@@ -6,18 +6,18 @@ from zpi.common import BaseSerialiazable
 class HealthInfrastructure(object):
 
     def __init__(self):
-        self.health = Health()
+        self.__health = Health()
 
     def add_dependency(self, name, is_critical, func):
         dep = Dependency(name, is_critical, func)
 
-        duplicated = [dep for dep in self.health.dependencies if str.lower(dep.name) == str.lower(name)]
+        duplicated = [dep for dep in self.__health.dependencies if str.lower(dep.name) == str.lower(name)]
 
         if len(duplicated) <= 0:
-            self.health.dependencies.append(dep)
+            self.__health.dependencies.append(dep)
 
     def validate_dependencies(self):
-        [dependency.exeucute_validation() for dependency in self.health.dependencies]
+        [dependency.exeucute_validation() for dependency in self.__health.dependencies]
 
         def set_application_status(dependency):
 
@@ -36,10 +36,11 @@ class HealthInfrastructure(object):
 
             return application_status
 
-        self.health.status = set_application_status(self.health.dependencies)
+        self.__health.status = set_application_status(self.__health.dependencies)
 
     def get_application_health_json(self):
-        return self.health.to_json()
+        return self.__health.to_json()
+
 
 class Health(BaseSerialiazable):
 
