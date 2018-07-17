@@ -29,8 +29,8 @@ The response object have this following fields:
 
 - _applicationName_: your application name (replacing blank spaces for dashes, accented characters for unaccented characters and omitting special charactes).
 - _createdBy_: name and version of your build tool. If no one are used, you can specify the CI server name and version.
-- _version_: your application version, may be '{major}.{minor}.{release}' pattern or a git hash from repository.
-- _buildNumber_: the date and the CI build number where itś possible to find the artifacts of this deployment. Preferable that it be in the following pattern: 'yyyyMMdd-{CI-BUILD_NUMBER}'.
+- _version_: your application version, may be `{major}.{minor}.{release}` pattern or a git hash from repository.
+- _buildNumber_: the date and the CI build number where it's possible to find the artifacts of this deployment. Preferable that it be in the following pattern: `yyyyMMdd-{CI-BUILD_NUMBER}`.
 - _framework_: name and version of the framework used in the project. 
 
 ### How to configure 
