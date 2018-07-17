@@ -2,7 +2,15 @@
 
 This library deliveries a simple way to give your python app all formatted data to create two restful endpoints for obtain data about application's info and health routes.
 
+## Installation
 
+```shell
+$ pip install git+https://github.com/getzoop/python-infra-endpoints.git@master#egg=zpi
+```
+OR add the following line to your `requirements.txt`: 
+```python
+git+https://github.com/getzoop/python-infra-endpoints.git@master#egg=zpi
+```
 
 ## Application Info
 
@@ -158,7 +166,7 @@ class HealthResource(object):
         resp.body = health.health.to_json()
         resp.status = falcon.HTTP_200
 ```
-##### Step By Step
+#### Step By Step
 
 - The method `register_dependency` receives 3 arguments:
 	- _name_: Dependency's name.
@@ -167,4 +175,4 @@ class HealthResource(object):
 
 - The method `validate_dependencies` execute all validation method from registered dependencies and assess, based on which dependencies is UP or DOWN, the application health.
 
-- The method `health.health.to_json()` get all information gathered and transform in a [JSON](#health-response-example).
+- The method `health.health.to_json()` get all information gathered and serialize in a [JSON](#health-response-example).
