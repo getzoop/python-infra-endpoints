@@ -4,11 +4,11 @@ from os.path import basename, splitext
 
 from setuptools import find_packages
 
-import src.zpi
+import zpi
 
 setup(
     name='zpi',
-    version=src.zpi.__version__,
+    version=zpi.__version__,
     url='https://github.com/getzoop/python-infra-endpoints',
     license='MIT',
     author='Renan Chagas',
@@ -20,6 +20,10 @@ setup(
     description='Monitoring tools for python application.',
     python_requires='>=2.7',
     zip_safe=False,
+    entry_points = """
+      [console_scripts]
+      zpi-increment-version = src.zpi.increment_version:main
+      """,
     install_requires=[
         "PyYAML",
         "stringcase"
