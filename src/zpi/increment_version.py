@@ -43,7 +43,7 @@ def main():
                }
     old_version = "{}.{}.{}".format(version["major"], version["minor"], version["release"])
     version[args.incrementing] += 1
-    new_version = "{}.{}.{}".format(version["major"], vergit sion["minor"], version["release"])
+    new_version = "{}.{}.{}".format(version["major"], version["minor"], version["release"])
 
     version_py_content = open(args.version_file, "r").read()
     version_py_stream = open(args.version_file, "w+")
