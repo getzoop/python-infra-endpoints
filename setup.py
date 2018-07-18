@@ -1,14 +1,32 @@
+import codecs
+import os
+import re
 from distutils.core import setup
 from glob import glob
 from os.path import basename, splitext
 
 from setuptools import find_packages
 
-import zpi
+here = os.path.abspath(os.path.dirname(__file__) + "src")
+
+
+def read(*parts):
+    with codecs.open(os.path.join(here, *parts), 'r') as fp:
+        return fp.read()
+
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
+
 
 setup(
     name='zpi',
-    version=zpi.__version__,
+    version=find_version("zpi", "version.py"),
     url='https://github.com/getzoop/python-infra-endpoints',
     license='MIT',
     author='Renan Chagas',
@@ -20,7 +38,7 @@ setup(
     description='Monitoring tools for python application.',
     python_requires='>=2.7',
     zip_safe=False,
-    entry_points = """
+    entry_points="""
       [console_scripts]
       zpi-increment-version = src.zpi.increment_version:main
       """,
