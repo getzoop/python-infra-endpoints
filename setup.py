@@ -40,7 +40,7 @@ setup(
     zip_safe=False,
     entry_points="""
       [console_scripts]
-      zpi-increment-version = src.zpi.increment_version:main
+      zpi-increment-version = zpi.increment_version:main
       """,
     install_requires=[
         "PyYAML",
