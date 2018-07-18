@@ -7,7 +7,7 @@ from os.path import basename, splitext
 
 from setuptools import find_packages
 
-here = os.path.abspath(os.path.dirname(__file__) + "src")
+here = os.path.abspath(os.path.dirname(__file__))
 
 
 def read(*parts):
@@ -26,7 +26,7 @@ def find_version(*file_paths):
 
 setup(
     name='zpi',
-    version=find_version("zpi", "version.py"),
+    version=find_version("src", "zpi", "version.py"),
     url='https://github.com/getzoop/python-infra-endpoints',
     license='MIT',
     author='Renan Chagas',
