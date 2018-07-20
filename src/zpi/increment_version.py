@@ -22,11 +22,11 @@ def main():
 
     if not os.path.isfile(args.version_file) or basename(args.version_file) != "version.py" or \
             not '__version__' in version_file_content:
-        print >> sys.stderr.write("Incorrect version.py path")
+        print("Incorrect version.py path", file=sys.stderr)
 
     if args.incrementing not in version_groups:
-        print >> sys.stderr.write(
-            "Incorrect increment(-i/--incrementing) argument. Should be one of those: major, minor, release")
+        print("Incorrect increment(-i/--incrementing) argument. Should be one of those: major, minor, release",
+              file=sys.stderr)
 
     regex_split_version_var = re.compile(r'^__version__.*\"(\d+)\.(\d+)\.(\d+)\"$', flags=re.MULTILINE)
 
@@ -35,7 +35,7 @@ def main():
     version_number = [item for item in splitted_version_var if item.isdigit()]
 
     if len(version_number) != 3:
-        print >> sys.stderr.write("Invalid version format, should be MAJOR.MINOR.RELEASE (ie: 1.1.5)")
+        print("Invalid version format, should be MAJOR.MINOR.RELEASE (ie: 1.1.5)", file=sys.stderr)
 
     version = {"major": int(version_number[0]),
                "minor": int(version_number[1]),
@@ -51,5 +51,6 @@ def main():
     version_py_content = version_py_content.replace("\"{}\"".format(old_version), "\"{}\"".format(new_version))
 
     version_py_stream.writelines(version_py_content)
+    version_py_stream.close()
     print("=== Incremented application version from {} to {} ===".format(old_version, new_version))
     print("=== Check {} file to see the new __version__ value ===".format(basename(args.version_file)))

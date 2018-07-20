@@ -12,7 +12,7 @@ class InfoInfrastructure(object):
         :param config_file_path: File path to the yaml file that contains all application information
         """
         if not os.path.isfile(config_file_path):
-            raise IOError("YAML configuration file not found at: " + config_file_path)
+            raise FileNotFoundError("YAML configuration file not found at: " + config_file_path)
 
         self.yaml = yaml.load(open(config_file_path, "r"))
 
