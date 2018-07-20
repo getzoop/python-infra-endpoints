@@ -71,11 +71,14 @@ class Health(BaseSerialiazable):
 
     @property
     def message(self):
-        return self._message
+        if self._status == ApplicationStatus.UP:
+            self._message = "All dependencies are up"
+        elif self._status == ApplicationStatus.PARTIAL:
+            self._message = "Failure to reach non critical dependencies"
+        elif self._status == ApplicationStatus.DOWN:
+            self._message = "Failure to reach critical dependencies"
 
-    @message.setter
-    def message(self, value):
-        self._message = value
+        return self._message
 
     @message.deleter
     def message(self):
