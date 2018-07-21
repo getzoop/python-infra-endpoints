@@ -9,7 +9,7 @@ def main():
     parser = ArgumentParser()
 
     parser.add_argument("-i", "--increment", dest="incrementing", default="release",
-                        help="Which part of application version will be incremented: major, minor or release.",
+                        help="Which part of application version will be incremented: major, minor or release. Default: release",
                         metavar="INCREMENTING")
 
     parser.add_argument("-f", "--version-file", dest="version_file",
