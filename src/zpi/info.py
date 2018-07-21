@@ -16,13 +16,13 @@ class InfoInfrastructure(object):
 
         self.yaml = yaml.load(open(config_file_path, "r"))
 
-    def get_application_info(self):
+    def get_application_info(self, version_var):
         """Return the application information like Name, BuildNumber, Version and Python version in a json format"""
         app_info = ApplicationInfo()
         app_info.application_name = self.yaml["applicationName"]
         app_info.created_by = self.yaml["createdBy"]
         app_info.build_number = self.yaml["buildNumber"]
-        app_info.version = self.yaml["version"]
+        app_info.version = version_var
         app_info.framework = "{name} {version}".format(name=self.yaml["framework"]["name"],
                                                        version=self.yaml["framework"]["version"])
 
