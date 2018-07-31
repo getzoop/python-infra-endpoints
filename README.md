@@ -5,11 +5,11 @@ This library deliveries a simple way to give your python app all formatted data 
 ## Installation
 
 ```shell
-$ pip install git+https://github.com/getzoop/python-infra-endpoints.git@master#egg=zpi
+$ pip install git+https://github.com/getzoop/python-infra-endpoints.git@releases/1.0.1#egg=zpi
 ```
 OR add the following line to your `requirements.txt`: 
 ```python
-git+https://github.com/getzoop/python-infra-endpoints.git@master#egg=zpi
+git+https://github.com/getzoop/python-infra-endpoints.git@releases/1.0.1#egg=zpi
 ```
 
 ## Application Info
@@ -17,7 +17,7 @@ git+https://github.com/getzoop/python-infra-endpoints.git@master#egg=zpi
 #### Response Example
 ```json
 {
-  "applicationName": "Zoop Subscription",
+  "applicationName": "My Application Name",
   "createdBy": "Build Tool",
   "version": "1.7.2",
   "buildNumber": "20180713-001",
@@ -46,7 +46,7 @@ The response object have this following fields:
 ### Configuration file
 First you must create a YAML file containing the following structure: 
 ```yaml
-applicationName: Zoop Subscription
+applicationName: My Application Name
 createdBy: Build Tool
 buildNumber: 20180713-001
 framework:
@@ -66,10 +66,10 @@ generateBuildNumber:
 ### Version Number
 For version number, you should create a file named `version.py` in the root of your application main module. Inside this file you will assign a version number to a variable named `__version__` like the example below:
  ```pythonstub
- """Zoop Subscription version."""
+ """My Application version."""
 __version__ = "1.0.1"
 
-"""Current version of Zoop Subscription."""
+"""Current version of My Application."""
  ```
 
 After the version file created, you will use the console script named `zpi-increment-version` provided by this module to bump the version: 
@@ -186,21 +186,21 @@ class HealthResource(object):
     def on_get(self, req, resp):
         health = HealthInfrastructure()
 
-        def check_payments_api_health():
-            service = PaymentsService()
-            return service.healthcheck(ApiEnum.PAYMENTS)
+        def check_api_health():
+            service = ApiService()
+            return service.healthcheck()
 
-        def check_zoop_api_health():
-            service = PaymentsService()
-            return service.healthcheck(ApiEnum.ZOOP_API)
+        def check_other_api_health():
+            service = OtherApiService()
+            return service.healthcheck()
 
         def check_database_connectivity():
             repository = HealthcheckRepository()
             return repository.check_connectivity()
 
         health.register_dependency("MySQL Database", True, check_database_connectivity)
-        health.register_dependency("Payments API", True, check_payments_api_health)
-        health.register_dependency("Zoop API", True, check_zoop_api_health)
+        health.register_dependency("API", True, check_api_health)
+        health.register_dependency("Other API", True, check_other_api_health)
 
         health.check_dependencies_status()
 
