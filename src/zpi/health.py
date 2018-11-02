@@ -1,4 +1,5 @@
 from enum import Enum
+from http import HTTPStatus
 
 from zpi.common import BaseSerialiazable
 
@@ -22,7 +23,7 @@ class HealthInfrastructure(object):
         Execute verification method in all registered dependencies to define which is UP or DOWN and if
         the application is UP, PARTIAL or DOWN
         """
-        [dependency.exeucute_validation() for dependency in self.__health.dependencies]
+        [dependency.execute_validation() for dependency in self.__health.dependencies]
 
         def set_application_status(dependency):
 
@@ -47,12 +48,26 @@ class HealthInfrastructure(object):
 
     def get_application_health_json(self):
         """Return all health information (application and dependencies) in a json string format"""
-        return self.__health.to_json()
+        return self.__health.to_json(), self._get_http_code(self.__health.status)
+
+    @staticmethod
+    def _get_http_code(status):
+
+        if status == ApplicationStatus.UP:
+            return HTTPStatus.OK
+        elif status == ApplicationStatus.PARTIAL:
+            return HTTPStatus.MULTI_STATUS
+        else:
+            return HTTPStatus.SERVICE_UNAVAILABLE
 
 
 class Health(BaseSerialiazable):
 
-    def __init__(self, dependencies=list()):
+    def __init__(self, dependencies=None):
+
+        if dependencies is None:
+            dependencies = list()
+
         self._status = None
         self._message = None
         self._dependencies = dependencies
@@ -100,11 +115,11 @@ class Health(BaseSerialiazable):
 
 class Dependency(BaseSerialiazable):
 
-    def __init__(self, name, isCritical, validationMethod):
+    def __init__(self, name, is_critical, validation_method):
         self._name = name
         self._status = None
-        self._isCritical = isCritical
-        self._validationMethod = validationMethod
+        self._isCritical = is_critical
+        self._validationMethod = validation_method
 
         self._exclude_attribute_from_json("validationMethod")
 
@@ -156,7 +171,7 @@ class Dependency(BaseSerialiazable):
     def validation_method(self):
         del self._validationMethod
 
-    def exeucute_validation(self):
+    def execute_validation(self):
         result = self.validation_method()
 
         if result is True:
