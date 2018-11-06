@@ -22,9 +22,9 @@ def checkHTTP3():
 
 
 app.register_dependency("Test 1", True, checkHTTP)
-# app.register_dependency("Test 2", True, checkHTTP2)
+app.register_dependency("Test 2", False, checkHTTP2)
 app.register_dependency("Test 3", True, checkHTTP3)
-# app.register_dependency("Test 3", False, checkHTTP3)
+app.register_dependency("Test 3", False, checkHTTP3)
 app.check_dependencies_status()
 print("-------------------- HEALTH ------------------")
 print(app.get_application_health_response())
