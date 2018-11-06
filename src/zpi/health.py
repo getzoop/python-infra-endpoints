@@ -46,7 +46,7 @@ class HealthInfrastructure(object):
 
         self.__health.status = set_application_status(self.__health.dependencies)
 
-    def get_application_health_json(self):
+    def get_application_health_response(self):
         """Return all health information (application and dependencies) in a json string format"""
         return self.__health.to_json(), self._get_http_code(self.__health.status)
 
