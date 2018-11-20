@@ -36,7 +36,7 @@ setup(
     py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
     include_package_data=True,
     description='Monitoring tools for python application.',
-    python_requires='>=3.5',
+    python_requires='>=3.6',
     zip_safe=False,
     entry_points="""
       [console_scripts]

@@ -1,3 +1,4 @@
+import inspect
 from enum import Enum
 from http import HTTPStatus
 
@@ -9,21 +10,41 @@ class HealthInfrastructure(object):
     def __init__(self):
         self.__health = Health()
 
-    def register_dependency(self, name, is_critical, func):
+    def register_dependency(self, name, is_critical, func, async=False):
         """Add a dependency to dependency list it will be verified to define if application is UP or DOWN"""
-        dep = Dependency(name, is_critical, func)
+
+        if async is False:
+            dep = Dependency(name, is_critical, func)
+        else:
+            dep = AsyncDependency(name, is_critical, func)
 
         duplicated = [dep for dep in self.__health.dependencies if str.lower(dep.name) == str.lower(name)]
 
         if len(duplicated) <= 0:
             self.__health.dependencies.append(dep)
 
+    async def register_async_dependency(self, name, is_critical, func):
+        """Add a dependency to dependency list it will be verified to define if application is UP or DOWN"""
+        self.register_dependency(name, is_critical, func, True)
+
+    async def check_all_dependencies_status(self):
+
+        async_dependencies = [dependency for dependency in self.__health.dependencies
+                              if type(AsyncDependency) is AsyncDependency]
+
+        [await dependency.execute_async_validation() for dependency in async_dependencies]
+
+        self.check_dependencies_status()
+
     def check_dependencies_status(self):
         """
         Execute verification method in all registered dependencies to define which is UP or DOWN and if
         the application is UP, PARTIAL or DOWN
         """
-        [dependency.execute_validation() for dependency in self.__health.dependencies]
+        sync_dependencies = [dependency for dependency in self.__health.dependencies
+                             if type(dependency) is Dependency]
+
+        [dependency.execute_validation() for dependency in sync_dependencies]
 
         def set_application_status(dependency):
 
@@ -112,6 +133,18 @@ class Health(BaseSerialiazable):
     def dependencies(self):
         del self._dependencies
 
+    # @property
+    # def async_dependencies(self):
+    #     return self._async_dependencies
+    #
+    # @async_dependencies.setter
+    # def async_dependencies(self, value):
+    #     self._async_dependencies = value
+    #
+    # @async_dependencies.deleter
+    # def async_dependencies(self):
+    #     del self._async_dependencies
+
 
 class Dependency(BaseSerialiazable):
 
@@ -172,12 +205,33 @@ class Dependency(BaseSerialiazable):
         del self._validationMethod
 
     def execute_validation(self):
+
+        if type(self) is AsyncDependency:
+            raise NotImplementedError("Async method not supported. Use 'execute_async_validation' method.")
+
         result = self.validation_method()
 
         if result is True:
             self.status = DependencyStatus.UP
         else:
             self.status = DependencyStatus.DOWN
+
+    async def execute_async_validation(self):
+
+        if type(self) is Dependency:
+            raise NotImplementedError("Sync method not supported. Use 'execute_validation' method.")
+
+        result = await self.validation_method()
+
+        if result is True:
+            self.status = DependencyStatus.UP
+        else:
+            self.status = DependencyStatus.DOWN
+
+
+class AsyncDependency(Dependency):
+    def __init__(self, name, is_critical, validation_method):
+        super(AsyncDependency, self).__init__(name, is_critical, validation_method)
 
 
 class DependencyStatus(Enum):
