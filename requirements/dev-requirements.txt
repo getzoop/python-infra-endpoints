@@ -1,4 +1,4 @@
 cython==0.29
-setuptools==40.5
+setuptools==40.6
 pip==18.1
 -r test-requirements.txt
