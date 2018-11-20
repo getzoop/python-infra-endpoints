@@ -1,8 +1,8 @@
-import inspect
-from enum import Enum
 from http import HTTPStatus
 
-from zpi.common import BaseSerialiazable
+from models.health import Health
+from models.dependency import AsyncDependency, Dependency
+from models.enums import DependencyStatus, ApplicationStatus
 
 
 class HealthInfrastructure(object):
@@ -47,7 +47,6 @@ class HealthInfrastructure(object):
         [dependency.execute_validation() for dependency in sync_dependencies]
 
         def set_application_status(dependency):
-
             """Set the application health status based on dependencies status"""
 
             critical_dependencies = [dep for dep in dependency if dep.is_critical is True]
@@ -80,172 +79,3 @@ class HealthInfrastructure(object):
             return HTTPStatus.MULTI_STATUS
         else:
             return HTTPStatus.SERVICE_UNAVAILABLE
-
-
-class Health(BaseSerialiazable):
-
-    def __init__(self, dependencies=None):
-
-        if dependencies is None:
-            dependencies = list()
-
-        self._status = None
-        self._message = None
-        self._dependencies = dependencies
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, value):
-        self._status = value
-        if value == ApplicationStatus.UP:
-            self._message = "All dependencies are up"
-        elif value == ApplicationStatus.PARTIAL:
-            self._message = "Failure to reach non critical dependencies"
-        elif value == ApplicationStatus.DOWN:
-            self._message = "Failure to reach critical dependencies"
-        else:
-            self._message = None
-
-    @status.deleter
-    def status(self):
-        del self._message
-
-    @property
-    def message(self):
-        return self._message
-
-    @message.deleter
-    def message(self):
-        del self._message
-
-    @property
-    def dependencies(self):
-        return self._dependencies
-
-    @dependencies.setter
-    def dependencies(self, value):
-        self._dependencies = value
-
-    @dependencies.deleter
-    def dependencies(self):
-        del self._dependencies
-
-    # @property
-    # def async_dependencies(self):
-    #     return self._async_dependencies
-    #
-    # @async_dependencies.setter
-    # def async_dependencies(self, value):
-    #     self._async_dependencies = value
-    #
-    # @async_dependencies.deleter
-    # def async_dependencies(self):
-    #     del self._async_dependencies
-
-
-class Dependency(BaseSerialiazable):
-
-    def __init__(self, name, is_critical, validation_method):
-        self._name = name
-        self._status = None
-        self._isCritical = is_critical
-        self._validationMethod = validation_method
-
-        self._exclude_attribute_from_json("validationMethod")
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value
-
-    @name.deleter
-    def name(self):
-        del self._name
-
-    @property
-    def is_critical(self):
-        return self._isCritical
-
-    @is_critical.setter
-    def is_critical(self, value):
-        self._isCritical = value
-
-    @is_critical.deleter
-    def is_critical(self):
-        del self._isCritical
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, value):
-        self._status = value
-
-    @status.deleter
-    def status(self):
-        del self._status
-
-    @property
-    def validation_method(self):
-        return self._validationMethod
-
-    @validation_method.setter
-    def validation_method(self, value):
-        self._validationMethod = value
-
-    @validation_method.deleter
-    def validation_method(self):
-        del self._validationMethod
-
-    def execute_validation(self):
-
-        if type(self) is AsyncDependency:
-            raise NotImplementedError("Async method not supported. Use 'execute_async_validation' method.")
-
-        result = self.validation_method()
-
-        if result is True:
-            self.status = DependencyStatus.UP
-        else:
-            self.status = DependencyStatus.DOWN
-
-    async def execute_async_validation(self):
-
-        if type(self) is Dependency:
-            raise NotImplementedError("Sync method not supported. Use 'execute_validation' method.")
-
-        result = await self.validation_method()
-
-        if result is True:
-            self.status = DependencyStatus.UP
-        else:
-            self.status = DependencyStatus.DOWN
-
-
-class AsyncDependency(Dependency):
-    def __init__(self, name, is_critical, validation_method):
-        super(AsyncDependency, self).__init__(name, is_critical, validation_method)
-
-
-class DependencyStatus(Enum):
-    UP = 1
-    DOWN = 2
-
-    def __str__(self):
-        return str(self.value)
-
-
-class ApplicationStatus(Enum):
-    UP = 1
-    PARTIAL = 2
-    DOWN = 3
-
-    def __str__(self):
-        return str(self.value)

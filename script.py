@@ -1,4 +1,3 @@
-import asyncio
 import os
 
 import zpi
@@ -30,13 +29,13 @@ print(app.get_application_health_response())
 print("-------------------- INFO-- ------------------")
 print(info.get_application_info(zpi.__version__))
 
+
 async def test_async_dependencies():
     app.register_dependency("Sync dependency Test 1", True, checkHTTP)
     await app.register_async_dependency("Async dependency Test 2", True, checkHTTP2)
     await app.check_all_dependencies_status()
     print("-------------------- ASYNC HEALTH ------------------")
     print(app.get_application_health_response())
-
 
 # loop = asyncio.get_event_loop()
 # loop.run_until_complete(test_async_dependencies())
