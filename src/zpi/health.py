@@ -30,7 +30,7 @@ class HealthInfrastructure(object):
     async def check_all_dependencies_status(self):
 
         async_dependencies = [dependency for dependency in self.__health.dependencies
-                              if type(AsyncDependency) is AsyncDependency]
+                              if type(dependency) is AsyncDependency]
 
         [await dependency.execute_validation() for dependency in async_dependencies]
 
