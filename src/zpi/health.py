@@ -1,8 +1,8 @@
 from http import HTTPStatus
 
-from models.health import Health
-from models.dependency import AsyncDependency, Dependency
-from models.enums import DependencyStatus, ApplicationStatus
+from zpi.models.health_info import Health
+from zpi.models.dependency import AsyncDependency, Dependency
+from zpi.models.enums import DependencyStatus, ApplicationStatus
 
 
 class HealthInfrastructure(object):
@@ -32,7 +32,7 @@ class HealthInfrastructure(object):
         async_dependencies = [dependency for dependency in self.__health.dependencies
                               if type(AsyncDependency) is AsyncDependency]
 
-        [await dependency.execute_async_validation() for dependency in async_dependencies]
+        [await dependency.execute_validation() for dependency in async_dependencies]
 
         self.check_dependencies_status()
 
