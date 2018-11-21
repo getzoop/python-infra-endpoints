@@ -1,8 +1,8 @@
 import json
 from abc import ABC
+from enum import Enum
 
 import stringcase
-from enum import Enum
 
 
 class BaseSerialiazable(ABC):
