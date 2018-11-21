@@ -1,8 +1,8 @@
 from http import HTTPStatus
 
-from models.health import Health
-from models.dependency import AsyncDependency, Dependency
-from models.enums import DependencyStatus, ApplicationStatus
+from zpi.models.health_info import Health
+from zpi.models.dependency import AsyncDependency, Dependency
+from zpi.models.enums import DependencyStatus, ApplicationStatus
 
 
 class HealthInfrastructure(object):

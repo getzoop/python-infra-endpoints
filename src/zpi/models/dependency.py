@@ -1,5 +1,5 @@
-from models.enums import DependencyStatus
-from models.base import BaseSerialiazable
+from .enums import DependencyStatus
+from .base import BaseSerialiazable
 
 
 class Dependency(BaseSerialiazable):
