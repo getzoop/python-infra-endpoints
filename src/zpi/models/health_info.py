@@ -1,6 +1,6 @@
 
-from models.base import BaseSerialiazable
-from models.enums import ApplicationStatus
+from .base import BaseSerialiazable
+from .enums import ApplicationStatus
 
 
 class Health(BaseSerialiazable):
