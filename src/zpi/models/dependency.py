@@ -62,22 +62,7 @@ class Dependency(BaseSerialiazable):
 
     def execute_validation(self):
 
-        if type(self) is AsyncDependency:
-            raise NotImplementedError("Async method not supported. Use 'execute_async_validation' method.")
-
         result = self.validation_method()
-
-        if result is True:
-            self.status = DependencyStatus.UP
-        else:
-            self.status = DependencyStatus.DOWN
-
-    async def execute_async_validation(self):
-
-        if type(self) is Dependency:
-            raise NotImplementedError("Sync method not supported. Use 'execute_validation' method.")
-
-        result = await self.validation_method()
 
         if result is True:
             self.status = DependencyStatus.UP
@@ -88,3 +73,13 @@ class Dependency(BaseSerialiazable):
 class AsyncDependency(Dependency):
     def __init__(self, name, is_critical, validation_method):
         super(AsyncDependency, self).__init__(name, is_critical, validation_method)
+
+    async def execute_validation(self):
+
+        result = await self.validation_method()
+
+        if result is True:
+            self.status = DependencyStatus.UP
+        else:
+            self.status = DependencyStatus.DOWN
+
