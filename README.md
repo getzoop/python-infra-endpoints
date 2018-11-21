@@ -5,11 +5,11 @@ This library deliveries a simple way to give your python app all formatted data 
 ## Installation
 
 ```shell
-$ pip install git+https://github.com/getzoop/python-infra-endpoints.git@release/1.0.1#egg=zpi
+$ pip install git+https://github.com/getzoop/python-infra-endpoints.git@1.0.1#egg=zpi
 ```
 OR add the following line to your `requirements.txt`: 
 ```python
-git+https://github.com/getzoop/python-infra-endpoints.git@release/1.0.1#egg=zpi
+git+https://github.com/getzoop/python-infra-endpoints.git@1.0.1#egg=zpi
 ```
 
 ## Application Info

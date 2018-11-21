@@ -1,6 +1,6 @@
 import sys
 
-from models.base import BaseSerialiazable
+from .base import BaseSerialiazable
 
 
 class ApplicationInfo(BaseSerialiazable):

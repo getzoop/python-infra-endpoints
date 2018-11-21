@@ -2,7 +2,7 @@ import os
 
 import yaml
 
-from models.application_info import ApplicationInfo
+from zpi.models.application_info import ApplicationInfo
 
 
 class InfoInfrastructure(object):

@@ -1,3 +1,4 @@
+import asyncio
 import os
 
 import zpi
@@ -38,5 +39,5 @@ async def test_async_dependencies():
     print("-------------------- ASYNC HEALTH ------------------")
     print(async_app.get_application_health_response())
 
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(test_async_dependencies())
+loop = asyncio.get_event_loop()
+loop.run_until_complete(test_async_dependencies())
