@@ -13,7 +13,7 @@ class InfoInfrastructure(object):
         if not os.path.isfile(config_file_path):
             raise FileNotFoundError("YAML configuration file not found at: " + config_file_path)
 
-        self.yaml = yaml.load(open(config_file_path, "r"))
+        self.yaml = yaml.load(open(config_file_path, "r"), Loader=yaml.FullLoader)
 
     def get_application_info(self, version_var):
         """Return the application information like Name, BuildNumber, Version and Python version in a json format"""
