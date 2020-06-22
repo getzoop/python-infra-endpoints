@@ -10,10 +10,10 @@ class HealthInfrastructure(object):
     def __init__(self):
         self.__health = Health()
 
-    def register_dependency(self, name, is_critical, func, async=False):
+    def register_dependency(self, name, is_critical, func, func_async=False):
         """Add a dependency to dependency list it will be verified to define if application is UP or DOWN"""
 
-        if async is False:
+        if func_async is False:
             dep = Dependency(name, is_critical, func)
         else:
             dep = AsyncDependency(name, is_critical, func)
